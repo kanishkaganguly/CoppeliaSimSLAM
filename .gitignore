@@ -194,5 +194,5 @@ qtcreator-*
 CATKIN_IGNORE
 
 # Ignore the simulator files
-coppeliasim/
+coppeliasim/coppeliasim
 # End of https://www.toptal.com/developers/gitignore/api/python,ros

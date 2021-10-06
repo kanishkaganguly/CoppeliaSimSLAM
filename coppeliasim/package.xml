@@ -1,0 +1,15 @@
+<package format="2">
+    <name>coppelia_sim_slam</name>
+    <description>CoppeliaSim SLAM with ROS</description>
+    <maintainer email="kganguly@terpmail.umd.edu">Kanishka Ganguly</maintainer>
+    <version>1.0.0</version>
+    <author>Kanishka Ganguly</author>
+    <license>GPL-3</license>
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>rospy</depend>
+    <depend>rosmsg</depend>
+    <depend>std_msgs</depend>
+    <depend>rosconsole</depend>
+</package>

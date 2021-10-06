@@ -1,0 +1,30 @@
+<launch>
+    <!-- Launch arguments -->
+    <arg name="mapping" default="true" />
+    <arg name="navigation" default="false" />
+
+    <!-- Set sim time -->
+    <rosparam param="use_sim_time">true</rosparam>
+
+    <!-- Start the simulator -->
+    <node pkg="rostopic" type="rostopic" name="start_sim" args="pub --once /startSimulation std_msgs/Bool '{data: true}'" output="screen"/>
+
+    <!-- Run robot steering -->
+    <node name="steering" pkg="rqt_robot_steering" type="rqt_robot_steering" respawn="true"/>
+
+    <!-- Mapping Launcher -->
+    <group if="$(arg mapping)">
+        <!-- Launch gmapping -->
+        <node name="gmapping" pkg="gmapping" type="slam_gmapping" respawn="true">
+            <remap from="scan" to="laser"/>
+        </node>
+
+        <!-- Launch rviz with config -->
+        <node name="viz" pkg="rviz" type="rviz" args="-d $(find coppelia_sim_slam)/vrep_save/mapping_rviz.rviz" respawn="true"></node>
+    </group>
+
+    <!-- Navigation Launcher -->
+    <group if="$(arg navigation)">
+        
+    </group>
+</launch>
