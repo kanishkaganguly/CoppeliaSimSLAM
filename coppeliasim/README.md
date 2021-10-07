@@ -31,15 +31,17 @@ source devel/setup.bash
 4. Run the simulator:
 ```bash
 cd workspace/src/CoppeliaSimSLAM/coppeliasim
-./coppeliaSim.sh
+./coppeliaSim.sh $(rospack find coppelia_sim_slam)/vrep_save/nav.ttt
 ```
-5. Load the `nav.ttt` scene from the `vrep_save` directory in the repository.
-6. Each of the following commands should be run in a separate instance:
+5. Mapping Mode
 ```bash
-rosrun rqt_robot_steering rqt_robot_steering
-rosrun gmapping slam_gmapping scan:=laser
-rosrun rviz rviz
+roslaunch coppelia_sim_slam robot_mapping.launch mapping:=true navigation:=false
 ```
-6. Load the `mapping_rviz.rviz` configuration file into rviz, once opened.
-
-You can now use the `rqt_robot_steering` menu to move the robot around, and create the required map. It will gradually populate in RViz as the map is built.
+This launches the SLAM mapping node. You can now use the `rqt_robot_steering` menu to move the robot around, and create the required map. It will gradually populate in RViz as the map is built.
+Once the mapping is complete, save the map using
+`rosrun map_server map_saver -f $(rospack find coppelia_sim_slam)/vrep_save/maze_map`
+6. Navigation Mode
+```bash
+roslaunch coppelia_sim_slam robot_mapping.launch mapping:=false navigation:=true
+```
+This launches the `map_server`, `amcl` and `move_base` nodes with their respective parameters. The robot should now be able to plan a path and navigate to it, given a `Pose` goal through RViz.

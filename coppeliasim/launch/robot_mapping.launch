@@ -31,6 +31,8 @@
         <!--- Run AMCL --> 
         <node name="amcl" pkg="amcl" type="amcl">
             <remap from="scan" to="laser"/>
+            <param name="use_map_topic" value="true" type="bool"/>
+            <param name="odom_model_type" value="diff" type="string"/>
         </node>
         
         <!-- Run move_base -->
