@@ -4,13 +4,13 @@
     <arg name="navigation" default="false" />
 
     <!-- Set sim time -->
-    <rosparam param="use_sim_time">true</rosparam>
+    <rosparam param="/use_sim_time">true</rosparam>
 
     <!-- Start the simulator -->
     <node pkg="rostopic" type="rostopic" name="start_sim" args="pub --once /startSimulation std_msgs/Bool '{data: true}'" output="screen"/>
 
     <!-- Run robot steering -->
-    <node name="steering" pkg="rqt_robot_steering" type="rqt_robot_steering" respawn="true"/>
+    <node name="steering" pkg="rqt_robot_steering" type="rqt_robot_steering" respawn="false"/>
 
     <!-- Mapping Launcher -->
     <group if="$(arg mapping)">
@@ -25,6 +25,24 @@
 
     <!-- Navigation Launcher -->
     <group if="$(arg navigation)">
+        <!-- Run the map server --> 
+        <node name="map_server" pkg="map_server" type="map_server" args="$(find coppelia_sim_slam)/vrep_save/maze_map.yaml"/>
         
+        <!--- Run AMCL --> 
+        <node name="amcl" pkg="amcl" type="amcl">
+            <remap from="scan" to="laser"/>
+        </node>
+        
+        <!-- Run move_base -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+            <rosparam file="$(find coppelia_sim_slam)/nav/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+            <rosparam file="$(find coppelia_sim_slam)/nav/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find coppelia_sim_slam)/nav/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find coppelia_sim_slam)/nav/global_costmap_params.yaml" command="load" /> 
+            <rosparam file="$(find coppelia_sim_slam)/nav/base_local_planner_params.yaml" command="load" />
+        </node>
+        
+        <!-- Launch rviz with config -->
+        <node name="viz" pkg="rviz" type="rviz" args="-d $(find coppelia_sim_slam)/vrep_save/mapping_rviz.rviz" respawn="true"></node>
     </group>
 </launch>
